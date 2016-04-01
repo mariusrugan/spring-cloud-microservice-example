@@ -5,10 +5,30 @@
 #
 
 case "$1" in
+    api-gateway)
+        APP_IMAGE="kbastani/api-gateway-microservice"
+        APP_CONTAINER_NAME="docker_api_gateway_1"
+        APP_CONTAINER_PORTS="-p 10000:10000 -p 5007:5006"
+        APP_CONTAINER_LINKS="--link docker_discovery_1:discovery --link docker_config_1:config --link docker_movie_1:movie --link docker_user_1:user --link docker_rating_1:rating"
+        ;;
+    # Done
+    config)
+        APP_IMAGE="kbastani/config-microservice"
+        APP_CONTAINER_NAME="docker_config_1"
+        APP_CONTAINER_PORTS="-p 8888:8888 -p 5008:5006"
+        APP_CONTAINER_LINKS="--link docker_discovery_1:discovery"
+        ;;
+    consul)
+        APP_IMAGE="kbastani/consul-microservice"
+        APP_CONTAINER_NAME="docker_consul_1"
+        APP_CONTAINER_PORTS="-p 8000:8000"
+        APP_CONTAINER_LINKS="--link docker_discovery_1:discovery"
+        ;;
+    # Done
     discovery)
         APP_IMAGE="kbastani/discovery-microservice"
         APP_CONTAINER_NAME="docker_discovery_1"
-        APP_CONTAINER_PORTS="-p 8761:8761"
+        APP_CONTAINER_PORTS="-p 8761:8761 -p 5010:5010"
         APP_CONTAINER_LINKS=""
         ;;
     hystrix)
@@ -17,22 +37,10 @@ case "$1" in
         APP_CONTAINER_PORTS="-p 7979:7979"
         APP_CONTAINER_LINKS="--link docker_discovery_1:discovery --link docker_gateway_1:gateway"
         ;;
-    config)
-        APP_IMAGE="kbastani/config-microservice"
-        APP_CONTAINER_NAME="docker_config_1"
-        APP_CONTAINER_PORTS="-p 8443:443 -p 5006:5006"
-        APP_CONTAINER_LINKS="--link docker_discovery_1:discovery"
-        ;;
     movie)
         APP_IMAGE="kbastani/movie-microservice"
         APP_CONTAINER_NAME="docker_movie_1"
         APP_CONTAINER_PORTS="-p 8444:8443 -p 5007:5006"
-        APP_CONTAINER_LINKS="--link docker_discovery_1:discovery --link docker_config_1:config"
-        ;;
-    user)
-        APP_IMAGE="kbastani/user-microservice"
-        APP_CONTAINER_NAME="docker_user_1"
-        APP_CONTAINER_PORTS="-p 8445:8443 -p 5008:5006"
         APP_CONTAINER_LINKS="--link docker_discovery_1:discovery --link docker_config_1:config"
         ;;
     rating)
@@ -41,12 +49,14 @@ case "$1" in
         APP_CONTAINER_PORTS="-p 8446:8443 -p 5009:5006"
         APP_CONTAINER_LINKS="--link docker_discovery_1:discovery --link docker_config_1:config"
         ;;
-    api-gateway)
-        APP_IMAGE="kbastani/api-gateway-microservice"
-        APP_CONTAINER_NAME="docker_api_gateway_1"
-        APP_CONTAINER_PORTS="-p 10000:10000"
-        APP_CONTAINER_LINKS="--link docker_discovery_1:discovery --link docker_config_1:config --link docker_movie_1:movie --link docker_user_1:user --link docker_rating_1:rating"
+
+    user)
+        APP_IMAGE="kbastani/user-microservice"
+        APP_CONTAINER_NAME="docker_user_1"
+        APP_CONTAINER_PORTS="-p 8445:8443 -p 5008:5006"
+        APP_CONTAINER_LINKS="--link docker_discovery_1:discovery --link docker_config_1:config"
         ;;
+
     *)
         echo "Usage: $0 {discovery|hystrix|config|movie|user|rating|api-gateway} {start|stop|restart|status}"
         exit 1
@@ -66,7 +76,8 @@ case "$2" in
         if [[ ${CONTAINER_STARTED} ]]; then
             echo "ERROR: ${APP_IMAGE} is up!"
         else
-            docker run ${APP_CONTAINER_PORTS} --hostname=${APP_CONTAINER_NAME} --name=${APP_CONTAINER_NAME} ${APP_CONTAINER_LINKS} -i -t ${APP_IMAGE}
+            # -i
+            docker run ${APP_CONTAINER_PORTS} --hostname=${APP_CONTAINER_NAME} --name=${APP_CONTAINER_NAME} ${APP_CONTAINER_LINKS} -t ${APP_IMAGE}
         fi
         ;;
     stop)
