@@ -1,0 +1,8 @@
+     ___
+ ___/ (_)__ _______ _  _____ ______ __
+/ _  / (_-</ __/ _ \ |/ / -_) __/ // /
+\_,_/_/___/\__/\___/___/\__/_/  \_, /
+                               /___/
+
+application: ............... ${application.formatted-version}
+spring-boot: ............... ${spring-boot.formatted-version}
