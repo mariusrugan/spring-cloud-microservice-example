@@ -76,8 +76,7 @@ case "$2" in
         if [[ ${CONTAINER_STARTED} ]]; then
             echo "ERROR: ${APP_IMAGE} is up!"
         else
-            # -i
-            docker run ${APP_CONTAINER_PORTS} --hostname=${APP_CONTAINER_NAME} --name=${APP_CONTAINER_NAME} ${APP_CONTAINER_LINKS} -t ${APP_IMAGE}
+            docker run ${APP_CONTAINER_PORTS} --hostname=${APP_CONTAINER_NAME} --name=${APP_CONTAINER_NAME} ${APP_CONTAINER_LINKS} -i -t ${APP_IMAGE}
         fi
         ;;
     stop)
